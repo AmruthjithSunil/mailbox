@@ -1,29 +1,12 @@
 import { useRef, useState } from "react";
-import styled from "styled-components";
-import { signUp } from "../firebase";
-import { useDispatch } from "react-redux";
+import { login, signUp } from "../utils/firebase";
+import { useDispatch, useSelector } from "react-redux";
 import { userActions } from "../store";
-
-const Frame = styled.div`
-  max-width: 300px;
-  margin: auto;
-  margin-top: 150px;
-  text-align: center;
-  border: solid 1px;
-`;
-
-const Input = styled.input`
-  width: 250px;
-  min-height: 32px;
-  margin: 0 0 12px 0;
-`;
-
-const Warning = styled.p`
-  margin: 0;
-  color: red;
-`;
+import { Frame, Input, Warning, warnings } from "../utils/Auth";
+import { Navigate } from "react-router-dom";
 
 export default function Auth() {
+  const isAuth = useSelector((state) => state.user.isAuth);
   const dispatch = useDispatch();
 
   const email = useRef();
@@ -32,31 +15,17 @@ export default function Auth() {
 
   const [emptyWarning, setEmptyWarning] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-
-  function warnings(email, password, confirmPassword) {
-    let text = "";
-    if (email === "") {
-      text += "Email should not be empty. ";
-    }
-    if (password === "") {
-      text += "Password should not be empty. ";
-    }
-    if (confirmPassword === "") {
-      text += "Confirm Password should not be empty. ";
-    }
-    if (password !== confirmPassword) {
-      text += "Password should match Confirm Password.";
-    }
-    return text;
-  }
+  const [isSignUp, setIsSignUp] = useState(false);
 
   async function submitHandler(e) {
     e.preventDefault();
     setEmptyWarning(false);
+    const cp = isSignUp ? confirmPassword.current.value : null;
     const warning = warnings(
       email.current.value,
       password.current.value,
-      confirmPassword.current.value
+      cp,
+      isSignUp
     );
     if (warning !== "") {
       setEmptyWarning(warning);
@@ -64,29 +33,42 @@ export default function Auth() {
     }
 
     setIsLoading(true);
-    const data = await signUp(email.current.value, password.current.value);
+    const arg = [email.current.value, password.current.value];
+    const data = isSignUp ? await signUp(...arg) : await login(...arg);
     console.log(data);
     data && dispatch(userActions.updateIdToken(data.idToken));
+    data && dispatch(userActions.updateIsAuth(true));
     setIsLoading(false);
   }
 
   return (
     <Frame>
-      <h2>Sign Up</h2>
+      {}
+      <h2>{isSignUp ? "Sign Up" : "Login"}</h2>
+      {isAuth && <Navigate to="/" />}
       <form onSubmit={submitHandler}>
         <Input type="email" placeholder="Email" ref={email} />
         <Input type="password" placeholder="Password" ref={password} />
-        <Input
-          type="password"
-          placeholder="Confirm Password"
-          ref={confirmPassword}
-        />
-        <Input type="submit" value="Sign Up" />
+        {isSignUp && (
+          <Input
+            type="password"
+            placeholder="Confirm Password"
+            ref={confirmPassword}
+          />
+        )}
+        <Input type="submit" value={isSignUp ? "Sign Up" : "Login"} />
       </form>
       {emptyWarning && <Warning>{emptyWarning}</Warning>}
       {isLoading && <p style={{ margin: "0" }}>sending request...</p>}
       <p>
-        Have an account? <a href="bla">Login</a>
+        Have an account?{" "}
+        <button
+          onClick={() => {
+            setIsSignUp((isSignUp) => !isSignUp);
+          }}
+        >
+          {isSignUp ? "Login" : "Sign Up"}
+        </button>
       </p>
     </Frame>
   );
