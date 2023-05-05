@@ -1,11 +1,11 @@
+import { Provider } from "react-redux";
+import Auth from "./pages/Auth";
+import store from "./store";
+
 export default function App() {
   return (
-    <>
-      <div
-        style={{ background: "blue", maxWidth: "100vw", minHeight: "100vh" }}
-      >
-        hi
-      </div>
-    </>
+    <Provider store={store}>
+      <Auth />
+    </Provider>
   );
 }
