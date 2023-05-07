@@ -3,11 +3,12 @@ import { useRef, useState } from "react";
 
 import { Editor } from "react-draft-wysiwyg";
 import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
-import { postMail } from "../utils/firebase";
-import { useSelector } from "react-redux";
 
 // import { Editor } from "draft-js";
 // import "draft-js/dist/Draft.css";
+
+import { postMail } from "../utils/firebase";
+import { useSelector } from "react-redux";
 
 export default function ComposeMail() {
   const [editorState, setEditorState] = useState(() =>

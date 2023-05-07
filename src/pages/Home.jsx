@@ -9,20 +9,30 @@ export default function Home() {
   const isAuth = useSelector((state) => state.user.isAuth);
   const dispatch = useDispatch();
 
+  function objToArr(obj) {
+    return Object.keys(obj).map((key) => {
+      return { id: key, ...obj[key] };
+    });
+  }
+
   async function getEverything() {
     const tokens = await getTokens();
     dispatch(userActions.updateIdToken(tokens.id_token));
     const data = await getUser(tokens);
     dispatch(userActions.updateUser(data.users[0]));
     const mails = await getMails(data.users[0].email);
-    console.log(mails);
-    // if(mails.send){
-    //   dispatch(mailActions.updateSendMail(mails.send))
-    // }
-    // if(mails.received){
-    //   dispatch(mailActions.updateReceivedMail(mails.received))
-    // }
-    // const send = {NUkMVlvhHgXl0Xz1b:  { content: "good morning", subject: "Test Mail" }}
+    if (!mails) {
+      return;
+    }
+    if (mails.send) {
+      dispatch(mailActions.updateSendMail(objToArr(mails.send)));
+    }
+    if (mails.received) {
+      dispatch(mailActions.updateReceivedMail(objToArr(mails.received)));
+    }
+    // const send = {
+    //   NUkMVlvhHgXl0Xz1b: { content: "good morning", subject: "Test Mail" },
+    // };
   }
 
   useEffect(() => {

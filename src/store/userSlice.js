@@ -20,6 +20,11 @@ const userSlice = createSlice({
     updateUser(state, action) {
       state.user = action.payload;
     },
+    logout(state) {
+      state.isAuth = false;
+      state.idToken = "null";
+      state.user = null;
+    },
   },
 });
 
