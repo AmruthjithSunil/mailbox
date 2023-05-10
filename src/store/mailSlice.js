@@ -17,14 +17,18 @@ const mailSlice = createSlice({
       state.sendMail = [action.payload, ...state.sendMail];
     },
     setAReceivedMail(state, action) {
-      const mails = [...state["receivedMail"]];
-      state.receivedMail = mails.map((mail) => {
+      state.receivedMail = state.receivedMail.map((mail) => {
         if (mail.id !== action.payload) {
           return mail;
         } else {
           return { ...mail, new: false };
         }
       });
+    },
+    deleteReceivedMail(state, action) {
+      state.receivedMail = state.receivedMail.filter(
+        (mail) => mail.id !== action.payload
+      );
     },
   },
 });

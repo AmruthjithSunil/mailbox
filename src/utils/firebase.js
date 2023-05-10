@@ -188,3 +188,18 @@ export async function postMail(mail) {
   await postFromMail(mail);
   await postToMail(mail);
 }
+
+export async function deleteReceivedMail(email, id) {
+  const shortEmail = short(email);
+  const deleteMailEndpoint = `https://mail-e5cba-default-rtdb.firebaseio.com/${shortEmail}/received/${id}.json`;
+  const res = await fetch(deleteMailEndpoint, {
+    method: "DELETE",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+  if (!res.ok) {
+    const data = await res.json();
+    alert(data.error.message);
+  }
+}
