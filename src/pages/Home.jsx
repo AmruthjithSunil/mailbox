@@ -1,5 +1,4 @@
 import { useDispatch, useSelector } from "react-redux";
-import { Navigate } from "react-router-dom";
 import ComposeMail from "../components/ComposeMail";
 import { getTokens, getUser } from "../utils/firebase";
 import { userActions } from "../store";
@@ -22,7 +21,6 @@ export default function Home() {
 
   return (
     <>
-      {!isAuth && <Navigate to="/auth" />}
       <h1>Welcome to your mailbox</h1>
       <ComposeMail />
     </>

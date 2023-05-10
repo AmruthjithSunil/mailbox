@@ -1,13 +1,11 @@
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Navigate } from "react-router-dom";
 import { getMails, getTokens, getUser } from "../utils/firebase";
 import { mailActions, userActions } from "../store";
 import { objToArr } from "../utils/Inbox";
 import MailList from "../components/MailList";
 
 export default function Inbox() {
-  const isAuth = useSelector((state) => state.user.isAuth);
   const user = useSelector((state) => state.user.user);
   const receivedMail = useSelector((state) => state.mail.receivedMail);
   const dispatch = useDispatch();
@@ -47,14 +45,12 @@ export default function Inbox() {
 
   return (
     <div style={{ marginTop: "16px" }}>
-      {!isAuth && <Navigate to="/auth" />}
       <p style={{ fontWeight: "bold" }}>
         {receivedMail.reduce((acc, mail) => acc + mail.new, 0)} unread mails
       </p>
       {receivedMail.map((mail) => (
         <MailList key={mail.id} id={mail.id} mail={mail} />
       ))}
-      <button>Refresh</button>
     </div>
   );
 }

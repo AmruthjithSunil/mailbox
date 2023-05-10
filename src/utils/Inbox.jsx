@@ -4,6 +4,10 @@ export const Frame = styled.button`
   display: flex;
   width: 100%;
   height: 32px;
+  background: lightgrey;
+  &:hover {
+    background: lightblue;
+  }
 `;
 
 export const BlueCicle = styled.div`
@@ -12,6 +16,17 @@ export const BlueCicle = styled.div`
   background: blue;
   margin: auto 4px;
   border-radius: 50%;
+`;
+
+export const Delete = styled.div`
+  margin: auto 32px;
+  border: solid 1px;
+  padding: 2px 4px;
+  border-radius: 4px;
+  background: lightsalmon;
+  &:hover {
+    background: lightcoral;
+  }
 `;
 
 export function objToArr(obj) {

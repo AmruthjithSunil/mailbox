@@ -3,6 +3,7 @@ import { getMail, getTokens, getUser, putMail } from "../utils/firebase";
 import { useDispatch, useSelector } from "react-redux";
 import { mailActions, userActions } from "../store";
 import { useEffect, useState } from "react";
+import DisplayMail from "../components/DisplayMail";
 
 export default function ReadMail() {
   const { id } = useParams();
@@ -23,11 +24,6 @@ export default function ReadMail() {
     setMail({ ...mail, id });
   }
 
-  async function aging(mail) {
-    const data = await putMail(user.email, id, { ...mail, new: false });
-    console.log(data);
-  }
-
   useEffect(() => {
     !user && getEverything();
   }, []);
@@ -37,13 +33,13 @@ export default function ReadMail() {
       const mail = receivedMails.find((el) => el.id === id);
       if (!mail) {
         updateMail(user.email);
-      } else {
-        if (mail.new) {
-          aging(mail);
-          dispatch(mailActions.setAReceivedMail(id));
-        }
-        setMail(mail);
+        return;
       }
+      if (mail.new) {
+        putMail(user.email, id, { ...mail, new: false });
+        dispatch(mailActions.setAReceivedMail(id));
+      }
+      setMail(mail);
     }
   }, [user]);
 
@@ -52,13 +48,7 @@ export default function ReadMail() {
       <Link to="/inbox">
         <button>Back</button>
       </Link>
-      {mail && (
-        <div style={{ marginLeft: "16px" }}>
-          <h3>From: {mail.from}</h3>
-          <h4>Subject: {mail.subject}</h4>
-          <p>Content: {mail.content}</p>
-        </div>
-      )}
+      {mail && <DisplayMail mail={mail} />}
     </>
   );
 }
