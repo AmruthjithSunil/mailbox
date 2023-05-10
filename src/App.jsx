@@ -5,6 +5,7 @@ import { RouterProvider, createBrowserRouter } from "react-router-dom";
 import Root from "./pages/Root";
 import Home from "./pages/Home";
 import Inbox from "./pages/Inbox";
+import ReadMail from "./pages/ReadMail";
 
 const router = createBrowserRouter([
   {
@@ -14,6 +15,7 @@ const router = createBrowserRouter([
       { path: "/", element: <Home /> },
       { path: "/auth", element: <Auth /> },
       { path: "/inbox", element: <Inbox /> },
+      { path: "/inbox/:id", element: <ReadMail /> },
     ],
   },
 ]);

@@ -24,9 +24,12 @@ export default function ComposeMail() {
     const mail = {
       subject: subject.current.value,
       content: editorState.getCurrentContent().getPlainText(),
+      to: email.current.value,
+      from: user.email,
+      new: true,
     };
-    await postMail(user.email, email.current.value, mail);
-    console.log(email.current.value, mail);
+    await postMail(mail);
+    console.log(mail);
   }
 
   return (

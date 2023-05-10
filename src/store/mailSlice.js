@@ -16,6 +16,16 @@ const mailSlice = createSlice({
     addSendMail(state, action) {
       state.sendMail = [action.payload, ...state.sendMail];
     },
+    setAReceivedMail(state, action) {
+      const mails = [...state["receivedMail"]];
+      state.receivedMail = mails.map((mail) => {
+        if (mail.id !== action.payload) {
+          return mail;
+        } else {
+          return { ...mail, new: false };
+        }
+      });
+    },
   },
 });
 
