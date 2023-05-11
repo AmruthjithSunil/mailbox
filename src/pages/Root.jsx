@@ -5,12 +5,14 @@ import { getMails, getTokens, getUser } from "../utils/firebase";
 import { mailActions, userActions } from "../store";
 import { useEffect } from "react";
 import { objToArr } from "../utils/Inbox";
+import { useState } from "react";
 
 export default function Root() {
   const isAuth = useSelector((state) => state.user.isAuth);
   const user = useSelector((state) => state.user.user);
   const dispatch = useDispatch();
   const location = useLocation();
+  const [intervalId, setIntervalId] = useState();
 
   async function getEverything() {
     const tokens = await getTokens();
@@ -39,7 +41,14 @@ export default function Root() {
   }
 
   useEffect(() => {
-    user && updateMails(user.email);
+    if (user) {
+      const id = setInterval(() => updateMails(user.email), 2000);
+      setIntervalId(id);
+    }
+    return () => {
+      console.log("cleared");
+      clearInterval(intervalId);
+    };
   }, [user]);
 
   return (

@@ -1,3 +1,4 @@
+import { useSelector } from "react-redux";
 import MailList from "../components/MailList";
 
 export default function Inbox({ isSend }) {

@@ -13,13 +13,13 @@ const router = createBrowserRouter([
     element: <Root />,
     children: [
       { path: "/", element: <ComposeMail /> },
-      { path: "/auth", element: <Auth /> },
       { path: "/inbox", element: <Inbox isSend={false} /> },
       { path: "/inbox/:id", element: <ReadMail isSend={false} /> },
       { path: "/sentmails", element: <Inbox isSend={true} /> },
       { path: "/sentmails/:id", element: <ReadMail isSend={true} /> },
     ],
   },
+  { path: "/auth", element: <Auth /> },
 ]);
 
 export default function App() {
