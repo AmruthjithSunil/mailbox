@@ -6,6 +6,7 @@ import Root from "./pages/Root";
 import Home from "./pages/Home";
 import Inbox from "./pages/Inbox";
 import ReadMail from "./pages/ReadMail";
+import SentMails from "./pages/SentMails";
 
 const router = createBrowserRouter([
   {
@@ -16,6 +17,7 @@ const router = createBrowserRouter([
       { path: "/auth", element: <Auth /> },
       { path: "/inbox", element: <Inbox /> },
       { path: "/inbox/:id", element: <ReadMail /> },
+      { path: "/sentmails", element: <SentMails /> },
     ],
   },
 ]);

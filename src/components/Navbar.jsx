@@ -36,6 +36,17 @@ export default function Navbar() {
           </span>
         </Link>
       </Nav>
+      <Nav>
+        <Link to="/sentmails">
+          <span
+            className={
+              location.pathname === "/sentmails" ? "active" : "inactive"
+            }
+          >
+            Sent Mails
+          </span>
+        </Link>
+      </Nav>
       <Nav onClick={logoutHandler}>
         {user && <>{user.email}</>}
         <Link to="/auth">
