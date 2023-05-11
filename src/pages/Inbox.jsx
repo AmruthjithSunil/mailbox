@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { getMails, getTokens, getUser } from "../utils/firebase";
-import { mailActions, userActions } from "../store";
+import { getMails } from "../utils/firebase";
+import { mailActions } from "../store";
 import { objToArr } from "../utils/Inbox";
 import MailList from "../components/MailList";
 
@@ -28,28 +28,14 @@ export default function Inbox() {
     // };
   }
 
-  async function getEverything() {
-    const tokens = await getTokens();
-    dispatch(userActions.updateIdToken(tokens.id_token));
-    const data = await getUser(tokens);
-    dispatch(userActions.updateUser(data.users[0]));
-  }
-
-  useEffect(() => {
-    !user && getEverything();
-  }, []);
-
   useEffect(() => {
     user && updateMails(user.email);
   }, [user]);
 
   return (
     <div style={{ marginTop: "16px" }}>
-      <p style={{ fontWeight: "bold" }}>
-        {receivedMail.reduce((acc, mail) => acc + mail.new, 0)} unread mails
-      </p>
       {receivedMail.map((mail) => (
-        <MailList key={mail.id} id={mail.id} mail={mail} />
+        <MailList key={mail.id} isSend={false} id={mail.id} mail={mail} />
       ))}
     </div>
   );

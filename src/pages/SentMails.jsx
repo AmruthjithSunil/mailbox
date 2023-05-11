@@ -43,7 +43,7 @@ export default function SentMails() {
   return (
     <div style={{ marginTop: "16px" }}>
       {sendMail.map((mail) => (
-        <MailList key={mail.id} id={mail.id} mail={mail} />
+        <MailList isSend={true} key={mail.id} id={mail.id} mail={mail} />
       ))}
     </div>
   );

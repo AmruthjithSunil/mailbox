@@ -4,13 +4,17 @@ import { deleteReceivedMail } from "../utils/firebase";
 import { useDispatch, useSelector } from "react-redux";
 import { mailActions } from "../store";
 
-export default function MailList({ mail }) {
+export default function MailList({ mail, isSend }) {
   const navigate = useNavigate();
   const user = useSelector((state) => state.user.user);
   const dispatch = useDispatch();
 
   function clickHandler() {
-    navigate(`/inbox/${mail.id}`);
+    if (isSend) {
+      navigate(`/sentmails/${mail.id}`);
+    } else {
+      navigate(`/inbox/${mail.id}`);
+    }
   }
 
   function deleteHandler() {
@@ -20,14 +24,22 @@ export default function MailList({ mail }) {
 
   return (
     <Frame>
-      {mail.new ? <BlueCicle /> : <BlueCicle style={{ background: "grey" }} />}
+      {!isSend && (
+        <>
+          {mail.new ? (
+            <BlueCicle />
+          ) : (
+            <BlueCicle style={{ background: "grey" }} />
+          )}
+        </>
+      )}
       <p style={{ margin: "auto 0" }} onClick={clickHandler}>
         <span style={{ fontWeight: "bold" }}>
           {mail.from.split("@")[0]} - {mail.subject}
         </span>{" "}
         - {mail.content}
       </p>
-      <Delete onClick={deleteHandler}>Delete</Delete>
+      {!isSend && <Delete onClick={deleteHandler}>Delete</Delete>}
     </Frame>
   );
 }

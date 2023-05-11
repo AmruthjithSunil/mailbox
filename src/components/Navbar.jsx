@@ -9,6 +9,7 @@ const Nav = styled.div`
 `;
 
 export default function Navbar() {
+  const receivedMail = useSelector((state) => state.mail.receivedMail);
   const location = useLocation();
   const user = useSelector((state) => state.user.user);
   const dispatch = useDispatch();
@@ -32,7 +33,7 @@ export default function Navbar() {
           <span
             className={location.pathname === "/inbox" ? "active" : "inactive"}
           >
-            Inbox
+            Inbox({receivedMail.reduce((acc, mail) => acc + mail.new, 0)})
           </span>
         </Link>
       </Nav>

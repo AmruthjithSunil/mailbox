@@ -115,10 +115,12 @@ export async function putMail(email, id, mail) {
   }
 }
 
-export async function getMail(email, id) {
+export async function getMail(email, id, isSend) {
   console.log("getmail");
   const shortEmail = short(email);
-  const getMailEndpoint = `https://mail-e5cba-default-rtdb.firebaseio.com/${shortEmail}/received/${id}.json`;
+  const getMailEndpoint = `https://mail-e5cba-default-rtdb.firebaseio.com/${shortEmail}/${
+    isSend ? "send" : "received"
+  }/${id}.json`;
   const res = await fetch(getMailEndpoint, {
     method: "GET",
     headers: {
