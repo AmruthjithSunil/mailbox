@@ -1,9 +1,10 @@
 import { Navigate, Outlet, useLocation } from "react-router-dom";
 import Navbar from "../components/Navbar";
 import { useDispatch, useSelector } from "react-redux";
-import { getTokens, getUser } from "../utils/firebase";
-import { userActions } from "../store";
+import { getMails, getTokens, getUser } from "../utils/firebase";
+import { mailActions, userActions } from "../store";
 import { useEffect } from "react";
+import { objToArr } from "../utils/Inbox";
 
 export default function Root() {
   const isAuth = useSelector((state) => state.user.isAuth);
@@ -21,6 +22,25 @@ export default function Root() {
   useEffect(() => {
     isAuth && !user && getEverything();
   }, []);
+
+  async function updateMails(email) {
+    const mails = await getMails(email);
+    if (!mails) {
+      dispatch(mailActions.updateSendMail([]));
+      dispatch(mailActions.updateReceivedMail([]));
+      return;
+    }
+    if (mails.send) {
+      dispatch(mailActions.updateSendMail(objToArr(mails.send)));
+    }
+    if (mails.received) {
+      dispatch(mailActions.updateReceivedMail(objToArr(mails.received)));
+    }
+  }
+
+  useEffect(() => {
+    user && updateMails(user.email);
+  }, [user]);
 
   return (
     <>

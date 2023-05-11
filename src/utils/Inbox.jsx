@@ -34,3 +34,6 @@ export function objToArr(obj) {
     return { id: key, ...obj[key] };
   });
 }
+// const send = {
+//   NUkMVlvhHgXl0Xz1b: { content: "good morning", subject: "Test Mail" },
+// };

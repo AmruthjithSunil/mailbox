@@ -5,7 +5,6 @@ import { RouterProvider, createBrowserRouter } from "react-router-dom";
 import Root from "./pages/Root";
 import Inbox from "./pages/Inbox";
 import ReadMail from "./pages/ReadMail";
-import SentMails from "./pages/SentMails";
 import ComposeMail from "./pages/ComposeMail";
 
 const router = createBrowserRouter([
@@ -15,9 +14,9 @@ const router = createBrowserRouter([
     children: [
       { path: "/", element: <ComposeMail /> },
       { path: "/auth", element: <Auth /> },
-      { path: "/inbox", element: <Inbox /> },
+      { path: "/inbox", element: <Inbox isSend={false} /> },
       { path: "/inbox/:id", element: <ReadMail isSend={false} /> },
-      { path: "/sentmails", element: <SentMails /> },
+      { path: "/sentmails", element: <Inbox isSend={true} /> },
       { path: "/sentmails/:id", element: <ReadMail isSend={true} /> },
     ],
   },

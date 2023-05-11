@@ -1,16 +1,11 @@
 import { useDispatch, useSelector } from "react-redux";
-import { Link, useLocation } from "react-router-dom";
-import styled from "styled-components";
+import { Link } from "react-router-dom";
 import { userActions } from "../store";
 import "../styles.css";
-
-const Nav = styled.div`
-  margin: auto;
-`;
+import Nav from "./Nav";
 
 export default function Navbar() {
   const receivedMail = useSelector((state) => state.mail.receivedMail);
-  const location = useLocation();
   const user = useSelector((state) => state.user.user);
   const dispatch = useDispatch();
 
@@ -21,39 +16,18 @@ export default function Navbar() {
 
   return (
     <div style={{ display: "flex" }}>
-      <Nav>
-        <Link to="/">
-          <span className={location.pathname === "/" ? "active" : "inactive"}>
-            Compose
-          </span>
-        </Link>
-      </Nav>
-      <Nav>
-        <Link to="/inbox">
-          <span
-            className={location.pathname === "/inbox" ? "active" : "inactive"}
-          >
-            Inbox({receivedMail.reduce((acc, mail) => acc + mail.new, 0)})
-          </span>
-        </Link>
-      </Nav>
-      <Nav>
-        <Link to="/sentmails">
-          <span
-            className={
-              location.pathname === "/sentmails" ? "active" : "inactive"
-            }
-          >
-            Sent Mails
-          </span>
-        </Link>
-      </Nav>
-      <Nav onClick={logoutHandler}>
+      <Nav to="/" content="Compose" />
+      <Nav
+        to="/inbox"
+        content={receivedMail.reduce((acc, mail) => acc + mail.new, 0)}
+      />
+      <Nav to="/sentmails" content="Sent Mails" />
+      <div style={{ margin: "auto" }} onClick={logoutHandler}>
         {user && <>{user.email}</>}
         <Link to="/auth">
           <span className="inactive">Logout</span>
         </Link>
-      </Nav>
+      </div>
     </div>
   );
 }
