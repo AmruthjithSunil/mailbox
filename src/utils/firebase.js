@@ -1,19 +1,31 @@
 import env from "../env";
 
+async function request(url, method, body) {
+  if (method[0] === "P") {
+    return await fetch(url, {
+      method,
+      body: JSON.stringify(body),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+  }
+  return await fetch(url, {
+    method,
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+}
+
 export async function signUp(email, password) {
   console.log("signup");
   const signupEndpoint = `https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=${env.apiKey}`;
 
-  const res = await fetch(signupEndpoint, {
-    method: "POST",
-    body: JSON.stringify({
-      email,
-      password,
-      returnSecureToken: true,
-    }),
-    headers: {
-      "Content-Type": "application/json",
-    },
+  const res = await request(signupEndpoint, "POST", {
+    email,
+    password,
+    returnSecureToken: true,
   });
 
   const data = await res.json();
@@ -32,16 +44,10 @@ export async function login(email, password) {
   console.log("login");
   const loginEndpoint = `https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=${env.apiKey}`;
 
-  const res = await fetch(loginEndpoint, {
-    method: "POST",
-    body: JSON.stringify({
-      email,
-      password,
-      returnSecureToken: true,
-    }),
-    headers: {
-      "Content-Type": "application/json",
-    },
+  const res = await request(loginEndpoint, "POST", {
+    email,
+    password,
+    returnSecureToken: true,
   });
 
   const data = await res.json();
@@ -59,32 +65,24 @@ export async function login(email, password) {
 export async function getTokens() {
   console.log("gettokens");
   const getIdTokenEndpoint = `https://securetoken.googleapis.com/v1/token?key=${env.apiKey}`;
-  const response = await fetch(getIdTokenEndpoint, {
-    method: "POST",
-    body: JSON.stringify({
-      grant_type: "refresh_token",
-      refresh_token: localStorage.getItem("refreshToken"),
-    }),
-    headers: {
-      "Content-Type": "application/json",
-    },
+
+  const res = await request(getIdTokenEndpoint, "POST", {
+    grant_type: "refresh_token",
+    refresh_token: localStorage.getItem("refreshToken"),
   });
-  const tokens = await response.json();
+
+  const tokens = await res.json();
   return tokens;
 }
 
 export async function getUser(tokens) {
   console.log("getusers");
   const getUserEndpoint = `https://identitytoolkit.googleapis.com/v1/accounts:lookup?key=${env.apiKey}`;
-  const res = await fetch(getUserEndpoint, {
-    method: "POST",
-    body: JSON.stringify({
-      idToken: tokens.id_token,
-    }),
-    headers: {
-      "Content-Type": "application/json",
-    },
+
+  const res = await request(getUserEndpoint, "POST", {
+    idToken: tokens.id_token,
   });
+
   const data = await res.json();
   if (res.ok) {
     return data;
@@ -100,13 +98,9 @@ function short(email) {
 export async function putMail(email, id, mail) {
   const shortEmail = short(email);
   const putMailEndpoint = `https://mail-e5cba-default-rtdb.firebaseio.com/${shortEmail}/received/${id}.json`;
-  const res = await fetch(putMailEndpoint, {
-    method: "PUT",
-    body: JSON.stringify(mail),
-    headers: {
-      "Content-Type": "application/json",
-    },
-  });
+
+  const res = await request(putMailEndpoint, "PUT", mail);
+
   const data = await res.json();
   if (res.ok) {
     return data;
@@ -121,12 +115,9 @@ export async function getMail(email, id, isSend) {
   const getMailEndpoint = `https://mail-e5cba-default-rtdb.firebaseio.com/${shortEmail}/${
     isSend ? "send" : "received"
   }/${id}.json`;
-  const res = await fetch(getMailEndpoint, {
-    method: "GET",
-    headers: {
-      "Content-Type": "application/json",
-    },
-  });
+
+  const res = await request(getMailEndpoint, "GET");
+
   const mail = await res.json();
   if (res.ok) {
     return mail;
@@ -139,12 +130,9 @@ export async function getMails(email) {
   console.log("getmail");
   const shortEmail = short(email);
   const getMailsEndpoint = `https://mail-e5cba-default-rtdb.firebaseio.com/${shortEmail}.json`;
-  const res = await fetch(getMailsEndpoint, {
-    method: "GET",
-    headers: {
-      "Content-Type": "application/json",
-    },
-  });
+
+  const res = await request(getMailsEndpoint, "GET");
+
   const mails = await res.json();
   if (res.ok) {
     return mails;
@@ -156,13 +144,9 @@ export async function getMails(email) {
 async function postFromMail(mail) {
   const shortFromMail = short(mail.from);
   const postFromMailsEndpoint = `https://mail-e5cba-default-rtdb.firebaseio.com/${shortFromMail}/send.json`;
-  const res = await fetch(postFromMailsEndpoint, {
-    method: "POST",
-    body: JSON.stringify(mail),
-    headers: {
-      "Content-Type": "application/json",
-    },
-  });
+
+  const res = await request(postFromMailsEndpoint, "POST", mail);
+
   if (!res.ok) {
     const data = await res.json();
     alert(data.error.message);
@@ -172,13 +156,9 @@ async function postFromMail(mail) {
 async function postToMail(mail) {
   const shortToMail = short(mail.to);
   const postToMailsEndpoint = `https://mail-e5cba-default-rtdb.firebaseio.com/${shortToMail}/received.json`;
-  const res = await fetch(postToMailsEndpoint, {
-    method: "POST",
-    body: JSON.stringify(mail),
-    headers: {
-      "Content-Type": "application/json",
-    },
-  });
+
+  const res = await request(postToMailsEndpoint, "POST", mail);
+
   if (!res.ok) {
     const data = await res.json();
     alert(data.error.message);
@@ -193,13 +173,22 @@ export async function postMail(mail) {
 
 export async function deleteReceivedMail(email, id) {
   const shortEmail = short(email);
-  const deleteMailEndpoint = `https://mail-e5cba-default-rtdb.firebaseio.com/${shortEmail}/received/${id}.json`;
-  const res = await fetch(deleteMailEndpoint, {
-    method: "DELETE",
-    headers: {
-      "Content-Type": "application/json",
-    },
-  });
+  const deleteReceivedMailEndpoint = `https://mail-e5cba-default-rtdb.firebaseio.com/${shortEmail}/received/${id}.json`;
+
+  const res = await request(deleteReceivedMailEndpoint, "DELETE");
+
+  if (!res.ok) {
+    const data = await res.json();
+    alert(data.error.message);
+  }
+}
+
+export async function deleteSendMail(email, id) {
+  const shortEmail = short(email);
+  const deleteSendMailEndpoint = `https://mail-e5cba-default-rtdb.firebaseio.com/${shortEmail}/send/${id}.json`;
+
+  const res = await request(deleteSendMailEndpoint, "DELETE");
+
   if (!res.ok) {
     const data = await res.json();
     alert(data.error.message);

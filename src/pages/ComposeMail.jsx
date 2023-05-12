@@ -9,11 +9,13 @@ import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
 
 import { postMail } from "../utils/firebase";
 import { useSelector } from "react-redux";
+import { Button, Frame, Input } from "../utils/Compose";
 
 export default function ComposeMail() {
   const [editorState, setEditorState] = useState(() =>
     EditorState.createEmpty()
   );
+  const [isSending, setIsSending] = useState(false);
 
   const user = useSelector((state) => state.user.user);
 
@@ -21,6 +23,7 @@ export default function ComposeMail() {
   const subject = useRef();
 
   async function sendHandler() {
+    setIsSending(true);
     const mail = {
       subject: subject.current.value,
       content: editorState.getCurrentContent().getPlainText(),
@@ -30,24 +33,21 @@ export default function ComposeMail() {
     };
     await postMail(mail);
     console.log(mail);
+    setIsSending(false);
+    setEditorState(() => EditorState.createEmpty());
+    subject.current.value = "";
   }
 
   return (
-    <div style={{ border: "solid" }}>
-      <input
-        type="email"
-        style={{ width: "100%", minHeight: "32px" }}
-        placeholder="To"
-        ref={email}
-      />
-      <input
-        type="text"
-        style={{ width: "100%", minHeight: "32px" }}
-        placeholder="Subject"
-        ref={subject}
-      />
+    <Frame>
+      <Input type="email" placeholder="To" ref={email} />
+      <Input type="text" placeholder="Subject" ref={subject} />
       <Editor editorState={editorState} onEditorStateChange={setEditorState} />
-      <button onClick={sendHandler}>Send</button>
-    </div>
+      {isSending ? (
+        <>Sending...</>
+      ) : (
+        <Button onClick={sendHandler}>Send</Button>
+      )}
+    </Frame>
   );
 }

@@ -5,3 +5,7 @@
 .inactive {
   color: black;
 }
+
+a:hover {
+  background-color: lightskyblue;
+}

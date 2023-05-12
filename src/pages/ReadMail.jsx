@@ -37,11 +37,11 @@ export default function ReadMail({ isSend }) {
   }, [user]);
 
   return (
-    <>
+    <div style={{ width: "1000px", margin: "auto" }}>
       <Link to={isSend ? "/sentmails" : "/inbox"}>
         <button>Back</button>
       </Link>
       {mail && <DisplayMail mail={mail} />}
-    </>
+    </div>
   );
 }

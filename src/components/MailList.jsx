@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { BlueCicle, Delete, Frame } from "../utils/Inbox";
-import { deleteReceivedMail } from "../utils/firebase";
+import { deleteReceivedMail, deleteSendMail } from "../utils/firebase";
 import { useDispatch, useSelector } from "react-redux";
 import { mailActions } from "../store";
 
@@ -18,8 +18,13 @@ export default function MailList({ mail, isSend }) {
   }
 
   function deleteHandler() {
-    dispatch(mailActions.deleteReceivedMail(mail.id));
-    deleteReceivedMail(user.email, mail.id);
+    if (isSend) {
+      dispatch(mailActions.deleteSendMail(mail.id));
+      deleteSendMail(user.email, mail.id);
+    } else {
+      dispatch(mailActions.deleteReceivedMail(mail.id));
+      deleteReceivedMail(user.email, mail.id);
+    }
   }
 
   return (
@@ -39,7 +44,7 @@ export default function MailList({ mail, isSend }) {
         </span>{" "}
         - {mail.content}
       </p>
-      {!isSend && <Delete onClick={deleteHandler}>Delete</Delete>}
+      <Delete onClick={deleteHandler}>Delete</Delete>
     </Frame>
   );
 }

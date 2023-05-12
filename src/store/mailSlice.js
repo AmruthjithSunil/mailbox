@@ -30,6 +30,11 @@ const mailSlice = createSlice({
         (mail) => mail.id !== action.payload
       );
     },
+    deleteSendMail(state, action) {
+      state.sendMail = state.sendMail.filter(
+        (mail) => mail.id !== action.payload
+      );
+    },
   },
 });
 

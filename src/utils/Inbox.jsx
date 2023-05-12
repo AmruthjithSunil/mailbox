@@ -2,9 +2,11 @@ import styled from "styled-components";
 
 export const Frame = styled.button`
   display: flex;
-  width: 100%;
+  width: 800px;
   height: 32px;
   background: lightgrey;
+  margin: auto;
+  padding-left: 40px;
   &:hover {
     background: lightblue;
   }
@@ -24,6 +26,7 @@ export const Delete = styled.div`
   padding: 2px 4px;
   border-radius: 4px;
   background: lightsalmon;
+  margin-left: auto;
   &:hover {
     background: lightcoral;
   }

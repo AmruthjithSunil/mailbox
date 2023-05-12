@@ -15,7 +15,14 @@ export default function Navbar() {
   }
 
   return (
-    <div style={{ display: "flex" }}>
+    <div
+      style={{
+        display: "flex",
+        maxWidth: "1000px",
+        margin: "auto",
+        marginBottom: "64px",
+      }}
+    >
       <Nav to="/" content="Compose" />
       <Nav
         to="/inbox"
@@ -24,6 +31,7 @@ export default function Navbar() {
       <Nav to="/sentmails" content="Sent Mails" />
       <div style={{ margin: "auto" }} onClick={logoutHandler}>
         {user && <>{user.email}</>}
+        <br />
         <Link to="/auth">
           <span className="inactive">Logout</span>
         </Link>

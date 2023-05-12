@@ -7,7 +7,7 @@ export default function Inbox({ isSend }) {
     : useSelector((state) => state.mail.receivedMail);
 
   return (
-    <div style={{ marginTop: "16px" }}>
+    <div>
       {mails.map((mail) => (
         <MailList key={mail.id} isSend={isSend} id={mail.id} mail={mail} />
       ))}
